@@ -40,11 +40,11 @@ if run_by_bash:
     PYTHON_PATH = os.environ["PYTHON_PATH"]
 
 else:
-    EXPERIMENT_NAME = "gan_cinn"
-    SAVE_DATA_PATH = ""
+    EXPERIMENT_NAME = "gan_cinn_hsi"
+    SAVE_DATA_PATH = "C:/Users/jedwinne/OneDrive - UGent/PhD-UG-8HYNGY3/Data/publication_data_dreher_DT/publication_data/results/"
     DATA_BASE_PATH = ""
-
-
+    PYTHON_PATH  = "C:/Users/jedwinne/OneDrive - UGent/Documents/GitHub/PersonalProjects/UDT-INN/src/"
+    
 config_path = get_conf_path(PYTHON_PATH, EXPERIMENT_NAME)
 config = load_config(config_path)
 

@@ -35,7 +35,7 @@ if dotenv_path.exists():
     load_dotenv(dotenv_path=dotenv_path)
 
 # Set Path variables
-intermediates_dir = unify_path(Path(os.getenv('HSI_DATA_PATH') or '') / 'intermediates')
+intermediates_dir = unify_path(Path("C:/Users/jedwinne/OneDrive - UGent/PhD-UG-8HYNGY3/Data/publication_data_dreher_DT/publication_data/simulated_data/HSI_Data/") / 'intermediates')
 results_dir = unify_path(Path(os.getenv('SAVE_DATA_PATH') or '') / 'results')
 figures_dir = unify_path(Path(os.getenv('SAVE_DATA_PATH') or '') / 'figures')
 tivita_cam_filters_file = intermediates_dir / 'optics' / 'artificial_tivita_camera_normal_20nm.csv'

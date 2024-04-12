@@ -6,14 +6,21 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
+<<<<<<< Updated upstream
 import sys  
 sys.path.insert(0, 'C:/Users/jedwinne/OneDrive - UGent/Documents/GitHub/PersonalProjects/UDT-cINN')
+=======
+
+import sys  
+sys.path.insert(0, 'C:/Users/jedwinne/OneDrive - UGent/Documents/GitHub/PersonalProjects/UDT-INN')
+>>>>>>> Stashed changes
 
 from src.trainers import get_model
 from src.data import get_data_module
 from src.utils.config_io import load_config, get_conf_path
 from src.utils.parser import DomainAdaptationParser
 from src.visualization import col_bar
+
 
 import matplotlib
 matplotlib.use('Agg')
@@ -24,10 +31,13 @@ torch.backends.cudnn.deterministic = True
 torch.set_float32_matmul_precision("high")
 
 SAVE_DATA_PATH = os.environ["SAVE_DATA_PATH"]
-DATA_BASE_PATH = os.environ["UDT_cINN_PROJECT_PATH"]
+DATA_BASE_PATH = os.environ["UDT_INN_PROJECT_PATH"]
 
 # pretrained_models = glob.glob(os.path.join(DATA_BASE_PATH, "pretrained_models", "*", "*"))
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 pretrained_models = ["C:/Users/jedwinne/OneDrive - UGent/PhD-UG-8HYNGY3/Data/publication_data_dreher_DT/publication_data/pretrained_models/HSI/cINN_DY"]
 
 for pretrained_model in pretrained_models:
@@ -56,6 +66,7 @@ for pretrained_model in pretrained_models:
     model = get_model(experiment_name=EXPERIMENT_NAME)
 
     if "hsi" in EXPERIMENT_NAME:
+        # model = model.load_from_checkpoint(checkpoint_path=config.checkpoint, experiment_config=config).cpu()
         model = model.load_from_checkpoint(checkpoint_path=config.checkpoint, experiment_config=config).cuda()
         data_module, test_data_manager = get_data_module(experiment_name=EXPERIMENT_NAME)
         config.batch_size = 1000
@@ -65,34 +76,34 @@ for pretrained_model in pretrained_models:
         os.makedirs(generated_spectrum_data_path, exist_ok=True)
 
         with test_data_manager(data_module):
-            for batch_idx, batch in enumerate(data_module.test_dataloader()):
-                print(batch_idx)
-                spectra_a, spectra_b = model.get_spectra(batch)
+            if __name__ =='__main__':
+                for batch_idx, batch in enumerate(data_module.test_dataloader()):
+                    print(batch_idx)
+                    spectra_a, spectra_b = model.get_spectra(batch)
+                    spectra_ab = model.translate_spectrum(spectra_a, input_domain="a")
 
-                spectra_ab = model.translate_spectrum(spectra_a, input_domain="a")
+                    spectra_a = spectra_a[0].detach().cpu().numpy() if isinstance(spectra_a, tuple) else spectra_a.detach().cpu().numpy()
+                    spectra_ab = spectra_ab[0].detach().cpu().numpy() if isinstance(spectra_ab, tuple) else spectra_ab.detach().cpu().numpy()
 
-                spectra_a = spectra_a[0].detach().cpu().numpy() if isinstance(spectra_a, tuple) else spectra_a.detach().cpu().numpy()
-                spectra_ab = spectra_ab[0].detach().cpu().numpy() if isinstance(spectra_ab, tuple) else spectra_ab.detach().cpu().numpy()
+                    spectra_a = spectra_a * config.data.std_a + config.data.mean_a
+                    spectra_ab = spectra_ab * config.data.std_b + config.data.mean_b
 
-                spectra_a = spectra_a * config.data.std_a + config.data.mean_a
-                spectra_ab = spectra_ab * config.data.std_b + config.data.mean_b
+                    # Uncomment this for saving the generated images
+                    # np.savez(os.path.join(generated_spectrum_data_path, f"test_file_{batch_idx}"),
+                    #          spectra_a=spectra_a,
+                    #          spectra_ab=spectra_ab,
+                    #          seg_a=batch["seg_a"].cpu().numpy(),
+                    #          subjects_a=batch["subjects_a"],
+                    #          image_ids_a=batch["image_ids_a"],
+                    #          )
 
-                # Uncomment this for saving the generated images
-                # np.savez(os.path.join(generated_spectrum_data_path, f"test_file_{batch_idx}"),
-                #          spectra_a=spectra_a,
-                #          spectra_ab=spectra_ab,
-                #          seg_a=batch["seg_a"].cpu().numpy(),
-                #          subjects_a=batch["subjects_a"],
-                #          image_ids_a=batch["image_ids_a"],
-                #          )
-
-                organ_label_a = batch["mapping"][str(int(batch["seg_a"][0].cpu()))]
-                plt.figure(figsize=(6, 6))
-                plt.plot(spectra_a[0], color="green", linestyle="solid", label=f"{organ_label_a} simulated spectrum")
-                plt.plot(spectra_ab[0], color="blue", linestyle="dashed", label=f"{organ_label_a} Sim2Real spectrum")
-                plt.legend()
-                plt.savefig(os.path.join(generated_spectrum_data_path, f"test_file_{batch_idx}.png"))
-                plt.close()
+                    organ_label_a = batch["mapping"][str(int(batch["seg_a"][0].cpu()))]
+                    plt.figure(figsize=(6, 6))
+                    plt.plot(spectra_a[0], color="green", linestyle="solid", label=f"{organ_label_a} simulated spectrum")
+                    plt.plot(spectra_ab[0], color="blue", linestyle="dashed", label=f"{organ_label_a} Sim2Real spectrum")
+                    plt.legend()
+                    plt.savefig(os.path.join(generated_spectrum_data_path, f"test_file_{batch_idx}.png"))
+                    plt.close()
     else:
         config.data.dimensions = [16, 128, 256]
         model = model.load_from_checkpoint(checkpoint_path=config.checkpoint, experiment_config=config).cuda()
@@ -120,11 +131,11 @@ for pretrained_model in pretrained_models:
             images_ab = images_ab * config.data.std_b + config.data.mean_b
 
             # Uncomment this for saving the generated images
-            # np.savez(os.path.join(generated_image_data_path, f"test_file_{file_idx}"),
-            #          images_a=images_a,
-            #          images_ab=images_ab,
-            #          seg_a=data["segmentation"],
-            #          )
+            np.savez(os.path.join(generated_image_data_path, f"test_file_{file_idx}"),
+                     images_a=images_a,
+                     images_ab=images_ab,
+                    #  seg_a=data["segmentation"],
+                     )
 
             plt.figure(figsize=(6, 6))
             plt.subplot(2, 1, 1)
