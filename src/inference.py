@@ -6,6 +6,9 @@ from datetime import datetime
 import numpy as np
 import matplotlib.pyplot as plt
 
+import sys  
+sys.path.insert(0, 'C:/Users/jedwinne/OneDrive - UGent/Documents/GitHub/PersonalProjects/UDT-cINN')
+
 from src.trainers import get_model
 from src.data import get_data_module
 from src.utils.config_io import load_config, get_conf_path
@@ -23,7 +26,9 @@ torch.set_float32_matmul_precision("high")
 SAVE_DATA_PATH = os.environ["SAVE_DATA_PATH"]
 DATA_BASE_PATH = os.environ["UDT_cINN_PROJECT_PATH"]
 
-pretrained_models = glob.glob(os.path.join(DATA_BASE_PATH, "pretrained_models", "*", "*"))
+# pretrained_models = glob.glob(os.path.join(DATA_BASE_PATH, "pretrained_models", "*", "*"))
+
+pretrained_models = ["C:/Users/jedwinne/OneDrive - UGent/PhD-UG-8HYNGY3/Data/publication_data_dreher_DT/publication_data/pretrained_models/HSI/cINN_DY"]
 
 for pretrained_model in pretrained_models:
     print(pretrained_model)
